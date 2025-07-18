@@ -499,7 +499,6 @@ Using Terraform Cloud provides several advantages over local Terraform execution
 
 This setup guide provides a comprehensive foundation for implementing Azure Policy as Code with Terraform Cloud. For additional support or troubleshooting, refer to the troubleshooting guide or consult the Azure, Terraform, and Terraform Cloud documentation.
 
-*Authored by Manus AI*
 
 
 
