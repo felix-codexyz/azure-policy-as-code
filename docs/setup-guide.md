@@ -10,9 +10,10 @@ This comprehensive guide will walk you through the complete setup process for im
 4. [Terraform Cloud Setup](#terraform-cloud-setup)
 5. [GitHub Repository Setup](#github-repository-setup)
 6. [GitHub Secrets Configuration](#github-secrets-configuration)
-7. [Repository Structure Setup](#repository-structure-setup)
-8. [Testing the Implementation](#testing-the-implementation)
-9. [Troubleshooting](#troubleshooting)
+7. [**GitHub Environments Configuration**](#github-environments-configuration)
+8. [Repository Structure Setup](#repository-structure-setup)
+9. [Testing the Implementation](#testing-the-implementation)
+10. [Troubleshooting](#troubleshooting)
 
 ## Prerequisites
 
@@ -103,7 +104,7 @@ The output will look similar to this:
 }
 ```
 
-**Security Note**: Save this output securely as you'll need these values for GitHub Secrets configuration. The `clientSecret` cannot be retrieved again after creation.
+**Security Note**: Save this output securely as you\`ll need these values for GitHub Secrets configuration. The `clientSecret` cannot be retrieved again after creation.
 
 ### Step 2: Verify Service Principal Permissions
 
@@ -130,7 +131,7 @@ You should see a Contributor role assignment at the subscription scope.
 3. Enter your email address
 4. Click "Create organization"
 
-**Important**: Remember your organization name as you'll need it in the Terraform configuration files.
+**Important**: Remember your organization name as you\`ll need it in the Terraform configuration files.
 
 ### Step 3: Create Workspaces
 
@@ -171,7 +172,7 @@ For both workspaces, you need to configure Azure authentication variables:
 4. Click "Create an API token"
 5. Enter a description (e.g., "GitHub Actions Integration")
 6. Click "Create API token"
-7. **Important**: Copy and save the token securely - it won't be shown again
+7. **Important**: Copy and save the token securely - it won\`t be shown again
 
 ## GitHub Repository Setup
 
@@ -181,7 +182,7 @@ For both workspaces, you need to configure Azure authentication variables:
 2. Click the "+" icon in the top right corner and select "New repository"
 3. Name your repository (e.g., `azure-policy-as-code`)
 4. Set the repository to **Public** or **Private** based on your preference
-5. Initialize with a README (optional, as we'll be adding our own)
+5. Initialize with a README (optional, as we\`ll be adding our own)
 6. Click "Create repository"
 
 ### Step 2: Clone the Repository Locally
@@ -224,7 +225,38 @@ To add each secret:
 
 ### Step 3: Verify Secrets Configuration
 
-After adding all secrets, you should see five secrets listed in your repository's Actions secrets section.
+After adding all secrets, you should see five secrets listed in your repository\`s Actions secrets section.
+
+## **GitHub Environments Configuration**
+
+Your GitHub Actions workflows utilize environments (`development` and `production`) to manage deployment targets and apply specific protection rules and secrets. These environments must be explicitly created in your GitHub repository settings for the workflows to function correctly.
+
+### Step 1: Navigate to Repository Settings
+
+1. Go to your GitHub repository.
+2. Click on the **`Settings`** tab in the top navigation bar.
+
+### Step 2: Access Environments
+
+1. In the left sidebar, under the `Code and automation` section, click on **`Environments`**.
+
+### Step 3: Create the `production` Environment
+
+1. Click on **`New environment`**.
+2. In the `Name` field, type `production` (this name must exactly match the `environment` field in your workflow YAML files).
+3. Click **`Configure environment`**.
+4. **(Optional but Recommended)**: Configure protection rules (e.g., `Required reviewers`, `Wait timer`) and deployment branches (e.g., allow only `main` branch).
+
+### Step 4: Create the `development` Environment
+
+1. Click on **`New environment`**.
+2. In the `Name` field, type `development` (this name must exactly match the `environment` field in your workflow YAML files).
+3. Click **`Configure environment`**.
+4. **(Optional)**: Configure protection rules and deployment branches as per your development workflow.
+
+### Step 5: Verify Environment Creation
+
+After creating both `production` and `development` environments, they should appear in the `Environments` list in your repository settings. Without these environments configured, your GitHub Actions workflows will fail with validation errors related to the `environment` field.
 
 ## Repository Structure Setup
 
@@ -356,7 +388,7 @@ Error: creating Storage Account "stdemopolicytest001" (Resource Group "rg-storag
 storage.AccountsClient#Create: Failure responding to request: StatusCode=403 -- 
 Original Error: autorest/azure: Service returned an error. 
 Status=403 Code="RequestDisallowedByPolicy" 
-Message="Resource 'stdemopolicytest001' was disallowed by policy."
+Message="Resource \`stdemopolicytest001\` was disallowed by policy."
 ```
 
 This failure confirms that the Azure Policy is working correctly and preventing resource creation outside the allowed region.
@@ -399,7 +431,7 @@ az storage account create \
 
 ## Cleanup Instructions
 
-When you're finished testing, you may want to clean up the resources:
+When you\`re finished testing, you may want to clean up the resources:
 
 ### Step 1: Destroy Resources via Terraform Cloud
 
@@ -468,4 +500,6 @@ Using Terraform Cloud provides several advantages over local Terraform execution
 This setup guide provides a comprehensive foundation for implementing Azure Policy as Code with Terraform Cloud. For additional support or troubleshooting, refer to the troubleshooting guide or consult the Azure, Terraform, and Terraform Cloud documentation.
 
 *Authored by Manus AI*
+
+
 
