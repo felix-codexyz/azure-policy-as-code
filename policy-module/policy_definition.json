@@ -1,0 +1,65 @@
+{
+  "properties": {
+    "displayName": "Restrict Resource Creation to East US Region Only",
+    "policyType": "Custom",
+    "mode": "All",
+    "description": "This policy restricts the creation of Azure resources to only the East US region. Any attempt to create resources in other regions will be denied.",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "General",
+      "createdBy": "DevOps Team",
+      "createdOn": "2025-01-18"
+    },
+    "parameters": {
+      "allowedLocations": {
+        "type": "Array",
+        "metadata": {
+          "displayName": "Allowed Locations",
+          "description": "The list of locations that can be specified when deploying resources",
+          "strongType": "location"
+        },
+        "defaultValue": [
+          "eastus"
+        ]
+      },
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "location",
+            "exists": "true"
+          },
+          {
+            "field": "location",
+            "notIn": "[parameters('allowedLocations')]"
+          },
+          {
+            "field": "type",
+            "notEquals": "Microsoft.AzureActiveDirectory/b2cDirectories"
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]",
+        "details": {
+          "message": "Resource creation is restricted to East US region only. Attempted location: {location}. Allowed locations: {allowedLocations}"
+        }
+      }
+    }
+  }
+}
+

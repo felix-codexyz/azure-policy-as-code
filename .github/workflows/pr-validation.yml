@@ -1,0 +1,89 @@
+name: Pull Request Validation
+
+on:
+  pull_request:
+    branches:
+      - main
+
+env:
+  ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+  TF_CLOUD_ORGANIZATION: succpinn-solutions-azure-policy
+
+jobs:
+  validate-policy:
+    runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.changed_files, 'policy-module/')
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.x
+        cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+    - name: Terraform Init - Policy Module
+      run: terraform init
+      working-directory: ./policy-module
+
+    - name: Terraform Validate - Policy Module
+      run: terraform validate
+      working-directory: ./policy-module
+
+    - name: Terraform Plan - Policy Module
+      run: terraform plan -no-color -input=false
+      working-directory: ./policy-module
+
+  validate-storage:
+    runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.changed_files, 'terraform-storage-module/')
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.x
+        cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+    - name: Terraform Init - Storage Module
+      run: terraform init
+      working-directory: ./terraform-storage-module
+
+    - name: Terraform Validate - Storage Module
+      run: terraform validate
+      working-directory: ./terraform-storage-module
+
+    - name: Terraform Plan - Storage Module
+      run: terraform plan -no-color -input=false
+      working-directory: ./terraform-storage-module
+
+  security-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Run Checkov action
+      id: checkov
+      uses: bridgecrewio/checkov-action@master
+      with:
+        directory: .
+        framework: terraform
+        output_format: sarif
+        output_file_path: reports/results.sarif
+
+    - name: Upload SARIF file
+      uses: github/codeql-action/upload-sarif@v3
+      if: always()
+      with:
+        sarif_file: reports/results.sarif
+
