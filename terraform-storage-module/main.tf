@@ -1,4 +1,4 @@
-# Terraform Module for Azure Storage Account.
+# Terraform Module for Azure Storage Account
 # This module deploys an Azure Storage Account in the specified region.
 
 resource "azurerm_resource_group" "storage_rg" {
