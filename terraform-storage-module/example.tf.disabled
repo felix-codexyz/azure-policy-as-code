@@ -1,13 +1,16 @@
 # Example usage of Azure Storage Account Module
+# This file is disabled by renaming it to .disabled extension
+# To use this example, copy the content to a separate Terraform configuration
+# outside of this module directory
 
 module "storage_account_example" {
-  source = "./."
+  source = "../terraform-storage-module"  # Path to the module from outside directory
 
   resource_group_name      = "rg-policy-test-storage"
   location                 = "Australia East"
   storage_account_name     = "stpolicydemo001"
   account_tier             = "Standard"
-  account_replication_type = "GRS" # Changed to GRS to match updated variable default
+  account_replication_type = "GRS"
   create_container         = true
   container_name           = "my-test-container"
 
@@ -16,3 +19,4 @@ module "storage_account_example" {
     Project     = "PolicyDemo"
   }
 }
+
