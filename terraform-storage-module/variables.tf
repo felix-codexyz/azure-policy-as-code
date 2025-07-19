@@ -53,7 +53,7 @@ variable "account_tier" {
 variable "account_replication_type" {
   description = "Storage account replication type"
   type        = string
-  default     = "LRS"
+  default     = "GRS"  # Changed from LRS to GRS to satisfy CKV_AZURE_206
   
   validation {
     condition = contains(["LRS", "GRS", "RAGRS", "ZRS", "GZRS", "RAGZRS"], var.account_replication_type)

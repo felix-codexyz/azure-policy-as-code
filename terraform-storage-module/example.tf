@@ -7,7 +7,7 @@ module "storage_account_example" {
   location                 = "Australia East"
   storage_account_name     = "stpolicydemo001"
   account_tier             = "Standard"
-  account_replication_type = "LRS"
+  account_replication_type = "GRS" # Changed to GRS to match updated variable default
   create_container         = true
   container_name           = "my-test-container"
 
@@ -16,4 +16,5 @@ module "storage_account_example" {
     Project     = "PolicyDemo"
   }
 }
+
 
