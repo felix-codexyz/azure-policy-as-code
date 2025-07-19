@@ -13,7 +13,11 @@ resource "azurerm_storage_account" "storage_account" {
   location                 = azurerm_resource_group.storage_rg.location
   account_tier             = var.account_tier
   account_replication_type = var.account_replication_type
+  kind                     = "StorageV2" # Ensure correct kind
   tags                     = var.tags
+
+  allow_blob_public_access      = false
+  shared_access_key_enabled     = false
 
   # CKV_AZURE_59: Ensure that Storage accounts disallow public access
   # CKV_AZURE_190: Ensure that Storage blobs restrict public access
