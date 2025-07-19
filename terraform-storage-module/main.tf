@@ -81,13 +81,26 @@ resource "azurerm_storage_account" "storage_account" {
   identity {
     type = "SystemAssigned"
   }
+
+  # Restrict blob public access and disable anonymous access
+  allow_blob_public_access      = false
+
+  # Disable Shared Key authorization
+  shared_access_key_enabled     = false
+
+  # These features are not directly supported in Terraform:
+  # - SAS expiration policy (CKV2_AZURE_41): Use Azure Policy in the portal if required.
+  # - Private endpoint (CKV2_AZURE_33): Requires a separate azurerm_private_endpoint resource.
+
+  # Customer Managed Key (CKV2_AZURE_1): If required, add a customer_managed_key block and supporting Key Vault resources.
+  # For now, Microsoft-managed keys are used.
 }
 
 resource "azurerm_storage_container" "storage_container" {
   count                 = var.create_container ? 1 : 0
   name                  = var.container_name
   storage_account_name  = azurerm_storage_account.storage_account.name
-  container_access_type = var.container_access_type # Should be "private" from variables.tf
+  container_access_type = "private" # Enforces private access for blob container
 }
 
 
