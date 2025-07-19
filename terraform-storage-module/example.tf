@@ -1,7 +1,7 @@
 # Example usage of Azure Storage Account Module
 
 module "storage_account_example" {
-  source = "."
+  source = "./."
 
   resource_group_name      = "rg-policy-test-storage"
   location                 = "Australia East"
@@ -16,5 +16,3 @@ module "storage_account_example" {
     Project     = "PolicyDemo"
   }
 }
-
-
