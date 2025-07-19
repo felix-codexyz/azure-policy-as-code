@@ -44,6 +44,12 @@ resource "azurerm_storage_account" "storage_account" {
     delete_retention_policy {
       days = 7 # CKV2_AZURE_38: Ensure soft-delete is enabled on Azure storage account
     }
+    logging {
+      read    = true
+      write   = true
+      delete  = true
+      version = "1.0"
+    }
   }
 
   queue_properties {
